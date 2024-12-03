@@ -1,5 +1,8 @@
 #!/bin/sh
 
+ls /beszel
+ls /beszel_data
+
 # 检查必要的环境变量
 if [ -z "$R2_ACCESS_KEY_ID" ] || [ -z "$R2_SECRET_ACCESS_KEY" ] || [ -z "$R2_ENDPOINT_URL" ] || [ -z "$R2_BUCKET_NAME" ]; then
     echo "Warning: R2 environment variables are not set, skipping backup/restore"
@@ -19,9 +22,9 @@ else
         echo "Found backup: ${LATEST_BACKUP}"
         echo "Downloading and restoring backup..."
         aws s3 cp "s3://${BUCKET_NAME}/${LATEST_BACKUP}" /tmp/ || { echo "Failed to download backup"; exit 1; }
-        rm -rf /opt/beszel/beszel_data/*  # 确保删除的是正确的目录
-        mkdir -p /opt/beszel/beszel_data  # 确保目录存在
-        cd /opt/beszel/beszel_data && unzip -q "/tmp/${LATEST_BACKUP}" || { echo "Failed to unzip backup"; exit 1; }
+        rm -rf /beszel/beszel_data/*  # 确保删除的是正确的目录
+        mkdir -p /beszel/beszel_data  # 确保目录存在
+        cd /beszel/beszel_data && unzip -q "/tmp/${LATEST_BACKUP}" || { echo "Failed to unzip backup"; exit 1; }
         rm "/tmp/${LATEST_BACKUP}"
         echo "Backup restored successfully"
     else
