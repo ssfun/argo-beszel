@@ -8,7 +8,7 @@ WORKDIR /app
 RUN apk add --no-cache git
 RUN git clone https://github.com/henrygd/beszel.git /
 
-COPY --from=builder /beszel /app
+COPY /beszel /app
 
 # 下载 Go 模块
 RUN go mod download
