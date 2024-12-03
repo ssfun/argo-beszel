@@ -29,4 +29,4 @@ else
 fi
 
 # 启动 beszel 服务
-/beszel
+/beszel serve --http=0.0.0.0:8090
