@@ -39,4 +39,8 @@ sleep 5
 
 ls /beszel_data
 
-/beszel serve --http=0.0.0.0:8090
+/beszel serve --http=0.0.0.0:8090 &
+
+sleep 5
+
+ls /beszel_data
