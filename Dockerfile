@@ -4,8 +4,9 @@ FROM alpine:latest
 
 RUN apk add --no-cache aws-cli tar gzip tzdata
 
-RUN cp /usr/share/zoneinfo/Your/Timezone /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata
 
 COPY --from=app /beszel /
 COPY --from=app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
