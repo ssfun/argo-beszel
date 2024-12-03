@@ -19,19 +19,49 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="beszel_backup_${TIMESTAMP}.tar.gz"
 
 # 压缩数据
+echo "Starting data compression..."
 cd / && tar -czf "/tmp/${BACKUP_FILE}" /beszel_data
+if [ $? -eq 0 ]; then
+    echo "Data compression completed successfully: /tmp/${BACKUP_FILE}"
+else
+    echo "Error: Data compression failed"
+    exit 1
+fi
 
 # 上传到R2
+echo "Starting upload to R2..."
 aws s3 cp "/tmp/${BACKUP_FILE}" "s3://${BUCKET_NAME}/${BACKUP_FILE}"
+if [ $? -eq 0 ]; then
+    echo "Upload to R2 completed successfully: s3://${BUCKET_NAME}/${BACKUP_FILE}"
+else
+    echo "Error: Upload to R2 failed"
+    exit 1
+fi
 
 # 删除本地临时文件
+echo "Removing local temporary file..."
 rm "/tmp/${BACKUP_FILE}"
+if [ $? -eq 0 ]; then
+    echo "Local temporary file removed successfully"
+else
+    echo "Error: Failed to remove local temporary file"
+    exit 1
+fi
 
 # 删除7天前的备份
 OLD_DATE=$(date -d "7 days ago" +%Y%m%d)
+echo "Checking for old backups to delete (older than ${OLD_DATE})..."
 aws s3 ls "s3://${BUCKET_NAME}/beszel_backup_" | while read -r line; do
     backup_date=$(echo "$line" | awk '{print $4}' | cut -d'_' -f3 | cut -d'.' -f1)
     if [ "${backup_date}" \< "${OLD_DATE}" ]; then
+        echo "Deleting old backup: $(echo "$line" | awk '{print $4}')"
         aws s3 rm "s3://${BUCKET_NAME}/$(echo "$line" | awk '{print $4}')"
+        if [ $? -eq 0 ]; then
+            echo "Old backup deleted successfully: $(echo "$line" | awk '{print $4}')"
+        else
+            echo "Error: Failed to delete old backup: $(echo "$line" | awk '{print $4}')"
+        fi
     fi
 done
+
+echo "Backup process completed successfully"
