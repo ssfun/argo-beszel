@@ -1,14 +1,12 @@
 # 使用 golang:alpine 作为构建阶段的基础镜像，并指定平台
 FROM --platform=$BUILDPLATFORM golang:alpine AS builder
 
-# 设置工作目录
-WORKDIR /app
-
 # 克隆项目代码
 RUN apk add --no-cache git
-RUN git clone https://github.com/henrygd/beszel.git /
+RUN git clone https://github.com/henrygd/beszel.git .
 
-COPY /beszel /app
+# 设置工作目录
+WORKDIR /beszel
 
 # 下载 Go 模块
 RUN go mod download
