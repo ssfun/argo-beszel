@@ -1,13 +1,10 @@
 # 使用 alpine 作为中间层来安装 aws-cli 和 zip
-FROM alpine:latest AS tools
+FROM alpine:latest AS prepare
 
 # 安装 aws-cli 和 zip
 RUN apk add --no-cache \
     aws-cli \
     zip
-
-# 使用 alpine 作为中间层来准备 entrypoint.sh
-FROM alpine:latest AS prepare
 
 # 将 entrypoint.sh 复制到镜像中并确保其具有可执行权限
 COPY entrypoint.sh /entrypoint.sh
@@ -16,10 +13,10 @@ RUN chmod +x /entrypoint.sh
 # 使用 henrygd/beszel 作为基础镜像
 FROM henrygd/beszel
 
-# 从 tools 中间层复制 aws-cli 和 zip
-COPY --from=tools /usr/bin/aws /usr/bin/aws
-COPY --from=tools /usr/bin/zip /usr/bin/zip
-COPY --from=tools /usr/bin/unzip /usr/bin/unzip
+# 从 prepare 中间层复制 aws-cli 和 zip
+COPY --from=prepare /usr/bin/aws /usr/bin/aws
+COPY --from=prepare /usr/bin/zip /usr/bin/zip
+COPY --from=prepare /usr/bin/unzip /usr/bin/unzip
 
 # 从 prepare 中间层复制 entrypoint.sh
 COPY --from=prepare /entrypoint.sh /entrypoint.sh
