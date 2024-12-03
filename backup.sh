@@ -19,7 +19,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="beszel_backup_${TIMESTAMP}.tar.gz"
 
 # 压缩数据
-tar -czf "/tmp/${BACKUP_FILE}" /beszel_data
+cd / && tar -czf "/tmp/${BACKUP_FILE}" /beszel_data
 
 # 上传到R2
 aws s3 cp "/tmp/${BACKUP_FILE}" "s3://${BUCKET_NAME}/${BACKUP_FILE}"
