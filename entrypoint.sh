@@ -29,7 +29,7 @@ else
     fi
 fi
 
+ls /opt/beszel/beszel_data
+
 # 启动 beszel 服务
 /beszel serve --http=0.0.0.0:8090
-
-ls
