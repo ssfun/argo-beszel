@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# 查找 beszel_data 文件夹，并输出其路径
+if [ -d "/beszel_data" ]; then
+    echo "Found beszel_data directory at: /beszel_data"
+else
+    echo "beszel_data directory not found."
+fi
+
 # 检查必要的环境变量
 if [ -z "$R2_ACCESS_KEY_ID" ] || [ -z "$R2_SECRET_ACCESS_KEY" ] || [ -z "$R2_ENDPOINT_URL" ] || [ -z "$R2_BUCKET_NAME" ]; then
     echo "Warning: R2 environment variables are not set, skipping backup/restore"
@@ -28,8 +35,6 @@ else
         echo "No backup found in R2, starting with fresh data directory"
     fi
 fi
-
-ls /opt/beszel/beszel_data
 
 # 启动 beszel 服务
 /beszel serve --http=0.0.0.0:8090
