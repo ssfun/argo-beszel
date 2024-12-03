@@ -33,3 +33,9 @@ else
         echo "No backup found in R2, starting with fresh data directory"
     fi
 fi
+
+# 重新启动 beszel 服务
+echo "Restarting beszel service..."
+pkill -f "/beszel serve"  # 停止当前运行的 beszel 服务
+sleep 2  # 等待服务停止
+/beszel serve --http=0.0.0.0:8090 &
