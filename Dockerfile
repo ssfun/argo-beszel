@@ -4,7 +4,7 @@ FROM alpine
 
 RUN apk add --no-cache aws-cli zip tzdata
 
-COPY --from=app /beszel /beszel
+COPY --from=app /beszel /
 COPY --from=app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 EXPOSE 8090
