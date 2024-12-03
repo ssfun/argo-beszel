@@ -10,7 +10,7 @@ RUN apk add --no-cache git && \
     git remote add origin https://github.com/henrygd/beszel.git && \
     git config core.sparseCheckout true && \
     echo "beszel/*" >> .git/info/sparse-checkout && \
-    git pull origin master
+    git pull origin main
 
 # 下载 Go 模块
 RUN go mod download
