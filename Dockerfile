@@ -1,16 +1,27 @@
-FROM henrygd/beszel AS app
+# 使用 alpine 作为中间层来安装 aws-cli 和 zip
+FROM alpine:latest AS tools
 
-FROM alpine
+# 安装 aws-cli 和 zip
+RUN apk add --no-cache \
+    aws-cli \
+    zip
 
-RUN apk add --no-cache aws-cli zip tzdata
+# 使用 henrygd/beszel 作为基础镜像
+FROM henrygd/beszel
 
-COPY --from=app /beszel /beszel
-COPY --from=app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+# 从 tools 中间层复制 aws-cli 和 zip
+COPY --from=tools /usr/bin/aws /usr/bin/aws
+COPY --from=tools /usr/bin/zip /usr/bin/zip
+COPY --from=tools /usr/bin/unzip /usr/bin/unzip
 
-EXPOSE 8090
-
+# 将 entrypoint.sh 复制到镜像中
 COPY entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+# 设置 entrypoint.sh 为容器的入口点
+ENTRYPOINT ["/entrypoint.sh"]
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+# 暴露端口
+EXPOSE 8090
+
+# 默认的 CMD 命令
+CMD ["serve", "--http=0.0.0.0:8090"]
