@@ -23,7 +23,6 @@ else
             echo "Found backup: ${LATEST_BACKUP}"
             echo "Downloading and restoring backup..."
             aws s3 cp "s3://${BUCKET_NAME}/${LATEST_BACKUP}" /tmp/ || { echo "Failed to download backup"; exit 1; }
-            rm -rf /beszel_data/*  # 确保删除的是正确的目录
             cd /beszel_data && unzip -q "/tmp/${LATEST_BACKUP}" || { echo "Failed to unzip backup"; exit 1; }
             rm "/tmp/${LATEST_BACKUP}"
             echo "Backup restored successfully"
@@ -37,5 +36,7 @@ fi
 
 # 等待5秒
 sleep 5
+
+ls /beszel_data
 
 /beszel serve --http=0.0.0.0:8090
