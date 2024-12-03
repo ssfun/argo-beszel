@@ -17,11 +17,8 @@ COPY --from=tools /usr/bin/unzip /usr/bin/unzip
 # 将 entrypoint.sh 复制到镜像中
 COPY entrypoint.sh /entrypoint.sh
 
-# 设置 entrypoint.sh 为容器的入口点
-ENTRYPOINT ["/entrypoint.sh"]
-
 # 暴露端口
 EXPOSE 8090
 
-# 默认的 CMD 命令
-CMD ["serve", "--http=0.0.0.0:8090"]
+# 设置 entrypoint.sh 为容器的入口点
+ENTRYPOINT ["/entrypoint.sh"]
