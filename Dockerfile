@@ -5,9 +5,12 @@ FROM --platform=$BUILDPLATFORM golang:alpine AS builder
 WORKDIR /app
 
 # 克隆项目代码
-RUN apk add --no-cache git
-RUN git clone https://github.com/henrygd/beszel.git .
-
+RUN apk add --no-cache git && \
+    git init && \
+    git remote add origin https://github.com/henrygd/beszel.git && \
+    git config core.sparseCheckout true && \
+    echo "beszel/*" >> .git/info/sparse-checkout && \
+    git pull origin master
 
 # 下载 Go 模块
 RUN go mod download
