@@ -19,3 +19,5 @@ RUN chmod +x /backup.sh && chmod +x /entrypoint.sh
 RUN echo "0 2 * * * /backup.sh >> /var/log/backup.log 2>&1" > /var/spool/cron/crontabs/root
 
 ENTRYPOINT [ "/entrypoint.sh" ]
+
+CMD ["serve", "--http=0.0.0.0:8090"]
