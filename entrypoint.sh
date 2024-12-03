@@ -1,11 +1,5 @@
 #!/bin/sh
 
-# 启动 beszel 服务
-/beszel serve --http=0.0.0.0:8090 &
-
-# 等待5秒
-sleep 5
-
 # 检查必要的环境变量
 if [ -z "$R2_ACCESS_KEY_ID" ] || [ -z "$R2_SECRET_ACCESS_KEY" ] || [ -z "$R2_ENDPOINT_URL" ] || [ -z "$R2_BUCKET_NAME" ]; then
     echo "Warning: R2 environment variables are not set, skipping backup/restore"
@@ -41,8 +35,7 @@ else
     fi
 fi
 
-# 重新启动 beszel 服务
-echo "Restarting beszel service..."
-pkill -f "/beszel serve"  # 停止当前运行的 beszel 服务
-sleep 2  # 等待服务停止
-/beszel serve --http=0.0.0.0:8090 &
+# 等待5秒
+sleep 5
+
+/beszel serve --http=0.0.0.0:8090
