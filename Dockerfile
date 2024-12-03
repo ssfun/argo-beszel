@@ -2,7 +2,7 @@ FROM henrygd/beszel AS app
 
 FROM alpine
 
-RUN apk add --no-cache aws-cli zip tzdata
+RUN apk add --no-cache aws-cli tar gzip tzdata
 
 COPY --from=app /beszel /
 COPY --from=app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
