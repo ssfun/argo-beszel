@@ -19,6 +19,8 @@ RUN CGO_ENABLED=0 GOGC=75 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-
 
 COPY entrypoint.sh /entrypoint.sh
 
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 8090
 
 ENTRYPOINT [ "entrypoint.sh" ]
