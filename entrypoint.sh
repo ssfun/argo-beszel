@@ -2,6 +2,10 @@
 
 ls /
 
+cd /beszel && ls
+
+cd /
+
 # 检查必要的环境变量
 if [ -z "$R2_ACCESS_KEY_ID" ] || [ -z "$R2_SECRET_ACCESS_KEY" ] || [ -z "$R2_ENDPOINT_URL" ] || [ -z "$R2_BUCKET_NAME" ]; then
     echo "Warning: R2 environment variables are not set, skipping backup/restore"
