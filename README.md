@@ -16,7 +16,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourusername/beszel-r2.git
+git clone https://github.com/yourusername/beszel.git
 cd beszel
 ```
 
