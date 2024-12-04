@@ -13,13 +13,13 @@ else
 
     # 尝试从R2恢复最新备份
     echo "Checking for latest backup in R2..."
-    LATEST_BACKUP=$(aws s3 ls "s3://${BUCKET_NAME}/@auto_pb_backup_beszel_" | sort | tail -n 1 | awk '{print $4}')
+    LATEST_BACKUP=$(aws s3 ls "s3://${BUCKET_NAME}/beszel_backup_" | sort | tail -n 1 | awk '{print $4}')
 
     if [ ! -z "$LATEST_BACKUP" ]; then
         echo "Found backup: ${LATEST_BACKUP}"
         echo "Downloading and restoring backup..."
         aws s3 cp "s3://${BUCKET_NAME}/${LATEST_BACKUP}" /tmp/
-        cd /beszel_data && unzip -q "/tmp/${LATEST_BACKUP}"
+        cd / && tar -xzf "/tmp/${LATEST_BACKUP}"
         rm "/tmp/${LATEST_BACKUP}"
         echo "Backup restored successfully"
     else
@@ -30,6 +30,10 @@ fi
 # 等待5秒
 sleep 3
 
+# 启动 crond 服务
+echo "Start crond ..."
+crond
+
 # 启动 beszel 服务
-echo "Start beszel server ..."
+echo "Start beszel ..."
 /beszel serve --http=0.0.0.0:8090
