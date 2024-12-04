@@ -19,7 +19,7 @@ else
         echo "Found backup: ${LATEST_BACKUP}"
         echo "Downloading and restoring backup..."
         aws s3 cp "s3://${BUCKET_NAME}/${LATEST_BACKUP}" /tmp/
-        cd / && unzip -q "/tmp/${LATEST_BACKUP}"
+        cd /beszel_data && unzip -q "/tmp/${LATEST_BACKUP}"
         rm "/tmp/${LATEST_BACKUP}"
         echo "Backup restored successfully"
     else
