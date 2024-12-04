@@ -2,7 +2,7 @@ FROM henrygd/beszel AS app
 
 FROM alpine:latest
 
-RUN apk add --no-cache aws-cli zip
+RUN apk add --no-cache aws-cli zip tzdata
 
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
