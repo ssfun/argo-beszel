@@ -10,6 +10,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 
 COPY --from=app /beszel /
 COPY --from=app /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=cloudflare/cloudflared:latest /usr/local/bin/cloudflared /usr/local/bin/cloudflared
 
 EXPOSE 8090
 
@@ -24,4 +25,5 @@ RUN echo "0 2 * * * /backup.sh >> /var/log/backup.log 2>&1" > /var/spool/cron/cr
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-CMD ["serve", "--http=0.0.0.0:8090"]
+# CMD ["serve", "--http=0.0.0.0:8090"]
+CMD ["/bin/sh", "-c", "cloudflared tunnel --no-autoupdate run --token \"$APP_KEY\" >/dev/null 2>&1 & serve --http=0.0.0.0:8090"]
