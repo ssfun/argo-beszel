@@ -34,6 +34,14 @@ sleep 3
 echo "Start crond ..."
 crond
 
+# 检查 CF_TOKEN 是否已设置
+if [ -n "$CF_TOKEN" ]; then
+    echo "Starting cloudflared..."
+    cloudflared --no-autoupdate tunnel run --protocol http2 --token "$CF_TOKEN" >/dev/null 2>&1 &
+else
+    echo "CF_TOKEN is not set, skipping cloudflared..."
+fi
+
 # 启动 beszel 服务
-echo "Start beszel ..."
+echo "Starting beszel..."
 /beszel serve --http=0.0.0.0:8090
