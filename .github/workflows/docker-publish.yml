@@ -26,4 +26,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/beszel-r2:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/argo-beszel:latest
