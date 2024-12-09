@@ -25,5 +25,4 @@ RUN echo "0 2 * * * /backup.sh >> /var/log/backup.log 2>&1" > /var/spool/cron/cr
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-# CMD ["serve", "--http=0.0.0.0:8090"]
-CMD ["/bin/sh", "-c", "cloudflared tunnel --no-autoupdate run --token \"$APP_KEY\" >/dev/null 2>&1 & serve --http=0.0.0.0:8090"]
+CMD ["serve", "--http=0.0.0.0:8090"]
