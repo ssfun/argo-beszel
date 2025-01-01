@@ -51,16 +51,33 @@ fi
 # 删除7天前的备份
 OLD_DATE=$(date -d "7 days ago" +%Y%m%d)
 echo "Checking for old backups to delete (older than ${OLD_DATE})..."
-aws s3 ls "s3://${BUCKET_NAME}/beszel_backup_" | while read -r line; do
-    backup_date=$(echo "$line" | awk '{print $4}' | cut -d'_' -f3 | cut -d'.' -f1)
-    if [ "${backup_date}" \< "${OLD_DATE}" ]; then
-        echo "Deleting old backup: $(echo "$line" | awk '{print $4}')"
-        aws s3 rm "s3://${BUCKET_NAME}/$(echo "$line" | awk '{print $4}')"
+
+# 列出所有备份文件并处理
+aws s3 ls "s3://${BUCKET_NAME}/" | grep "beszel_backup_" | while read -r line; do
+    # 提取文件名
+    backup_file=$(echo "$line" | awk '{print $4}')
+    # 从文件名中提取日期部分 (YYYYMMDD)
+    backup_date=$(echo "$backup_file" | grep -oP '\d{8}')
+
+    if [ -z "$backup_date" ]; then
+        echo "Warning: Could not extract date from file: $backup_file"
+        continue
+    fi
+
+    echo "Processing file: $backup_file"
+    echo "Extracted date: $backup_date"
+
+    # 比较日期
+    if [ "$backup_date" -lt "$OLD_DATE" ]; then
+        echo "Deleting old backup: $backup_file"
+        aws s3 rm "s3://${BUCKET_NAME}/$backup_file"
         if [ $? -eq 0 ]; then
-            echo "Old backup deleted successfully: $(echo "$line" | awk '{print $4}')"
+            echo "Old backup deleted successfully: $backup_file"
         else
-            echo "Error: Failed to delete old backup: $(echo "$line" | awk '{print $4}')"
+            echo "Error: Failed to delete old backup: $backup_file"
         fi
+    else
+        echo "Keeping backup: $backup_file"
     fi
 done
 
