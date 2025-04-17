@@ -69,14 +69,27 @@ create_backup() {
     echo "Local temporary file removed successfully"
 
     # 删除旧备份
-    OLD_DATE=$(date -d "7 days ago" +%Y%m%d)
-    echo "Cleaning up old backups before: $OLD_DATE"
-    aws s3 ls "s3://${BUCKET_NAME}/" | grep "beszel_backup_" | while read -r line; do
-        backup_file=$(echo "$line" | awk '{print $4}')
-        backup_date=$(echo "$backup_file" | grep -oP '\d{8}')
-        if [ -n "$backup_date" ] && [ "$backup_date" -lt "$OLD_DATE" ]; then
-            echo "Deleting old backup: $backup_file"
-            aws s3 rm "s3://${BUCKET_NAME}/$backup_file"
+    echo "Cleaning up old backups older than 7 days..."
+    # 计算7天前的日期
+    if date --date="7 days ago" +%Y%m%d >/dev/null 2>&1; then
+        OLD_DATE=$(date --date="7 days ago" +%Y%m%d)
+    else
+        OLD_DATE=$(date -d "7 days ago" +%Y%m%d 2>/dev/null || echo "00000000")
+    fi
+    echo "Cutoff date for old backups: ${OLD_DATE}"
+
+    # 列出所有备份文件并检查日期
+    aws s3 ls "s3://${BUCKET_NAME}/beszel_backup_" | while read -r line; do
+        BACKUP_FILE=$(echo "$line" | awk '{print $4}')
+        if [ -n "$BACKUP_FILE" ]; then
+            # 提取日期部分 (格式: beszel_backup_YYYYMMDD_HHMMSS.tar.gz)
+            BACKUP_DATE=$(echo "$BACKUP_FILE" | sed -e 's/.*beszel_backup_\([0-9]\{8\}\).*/\1/')
+            if [ -n "$BACKUP_DATE" ] && [ "$BACKUP_DATE" != "$BACKUP_FILE" ]; then
+                if [ "$BACKUP_DATE" -lt "$OLD_DATE" ] 2>/dev/null; then
+                    echo "Deleting old backup: $BACKUP_FILE (Date: $BACKUP_DATE)"
+                    aws s3 rm "s3://${BUCKET_NAME}/$BACKUP_FILE"
+                fi
+            fi
         fi
     done
     
